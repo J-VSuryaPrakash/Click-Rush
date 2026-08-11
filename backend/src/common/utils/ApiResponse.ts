@@ -14,8 +14,8 @@ class ApiResponse {
         return new ApiResponse(201, message, data);
     }
 
-    static ok(message: string){
-        return new ApiResponse(200, message, null);
+    static ok(message: string, data: any){
+        return new ApiResponse(200, message, data);
     }
 
 }

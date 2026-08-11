@@ -45,7 +45,7 @@ export const logout = async (req: Request, res: Response) => {
     return res.status(200)
         .clearCookie('accessToken')
         .clearCookie('refreshToken')
-        .json(ApiResponse.ok('Uses logout successful'))
+        .json(ApiResponse.ok('Uses logout successful', null))
 
 }
 
@@ -56,5 +56,5 @@ export const refresh = async (req: Request, res: Response) => {
     res.status(200)
         .cookie('accessToken', accessToken)
         .cookie('refreshToken', refreshToken)
-        .send(ApiResponse.ok('Tokens are refreshed'));
+        .send(ApiResponse.ok('Tokens are refreshed', null));
 }

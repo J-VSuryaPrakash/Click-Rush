@@ -13,6 +13,13 @@ app.use(cors());
 app.use(cookieParser());
 
 
+import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
+
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+
+
 app.get('/health', (req, res) => {
     res.send('The server is healthy!');
 });
