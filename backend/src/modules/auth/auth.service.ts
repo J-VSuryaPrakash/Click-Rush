@@ -35,13 +35,13 @@ const registerUser = async (data: RegisterSchema) => {
     const refreshToken = generateRefreshToken(user);
 
     const newUser = await db.update(users)
-                            .set({ refreshToken: refreshToken })
-                            .where(eq(users.email, user.email))
-                            .returning({
-                                id: users.id,
-                                name: users.username,
-                                email: users.email
-                            })
+        .set({ refreshToken: refreshToken })
+        .where(eq(users.email, user.email))
+        .returning({
+            id: users.id,
+            name: users.username,
+            email: users.email
+        })
 
     return { newUser, accessToken, refreshToken };
 }
@@ -68,27 +68,52 @@ const loginUser = async (data: LoginSchema) => {
     const refreshToken = generateRefreshToken(user);
 
     const userData = await db.update(users)
-                            .set({ refreshToken: refreshToken })
-                            .where(eq(users.id, user.id))
-                            .returning({
-                                id: users.id,
-                                name: users.username,
-                                email: users.email
-                            })
+        .set({ refreshToken: refreshToken })
+        .where(eq(users.id, user.id))
+        .returning({
+            id: users.id,
+            name: users.username,
+            email: users.email
+        })
 
     return { accessToken, refreshToken, userData };
 }
 
-const logoutUser = async(userId: string) => {
+const logoutUser = async (userId: string) => {
 
     await db.update(users)
-            .set({refreshToken: null})
-    
+        .set({ refreshToken: null })
+
     return;
+}
+
+const tokenRefresh = async (token: string) => {
+
+    const decodedToken = verifyRefreshToken(token);
+
+    if (!decodedToken) {
+        throw ApiError.invalidToken('Invalid token');
+    }
+
+    const userId = decodedToken.id;
+
+    const [user] = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.id, userId));
+
+    if (!user) {
+        throw ApiError.userNotFound('User not found');
+    }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await db.update(users).set({ refreshToken: refreshToken });
+
+    return { accessToken, refreshToken };
 }
 
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    tokenRefresh
 }

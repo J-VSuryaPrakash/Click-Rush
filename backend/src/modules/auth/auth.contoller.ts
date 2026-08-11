@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import ApiResponse from "../../common/utils/ApiResponse.js";
-import { registerUser, loginUser, logoutUser } from "./auth.service.js";
-import { verifyAccessToken } from "../../common/utils/Jwt.utils.js";
+import { registerUser, loginUser, logoutUser, tokenRefresh } from "./auth.service.js";
 
 export const createUser = async (req: Request, res: Response) => {
 
@@ -13,7 +12,7 @@ export const createUser = async (req: Request, res: Response) => {
             secure: true,
             sameSite: 'none'
         })
-        .cookie('refreshToken',  refreshToken, {
+        .cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: 'none'
@@ -31,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
             secure: true,
             sameSite: 'none'
         })
-        .cookie('refreshToken',  refreshToken, {
+        .cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: 'none'
@@ -40,12 +39,22 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const logout = async (req: Request, res: Response) => {
-    
-    logoutUser(req.user?.id!);
-    
-    return res.status(200)
-            .clearCookie('accessToken')
-            .clearCookie('refreshToken')
-            .json(ApiResponse.ok('Uses logout successful'))
 
+    logoutUser(req.user?.id!);
+
+    return res.status(200)
+        .clearCookie('accessToken')
+        .clearCookie('refreshToken')
+        .json(ApiResponse.ok('Uses logout successful'))
+
+}
+
+export const refresh = async (req: Request, res: Response) => {
+
+    const { accessToken, refreshToken } = await tokenRefresh(req.cookies.refreshToken);
+
+    res.status(200)
+        .cookie('accessToken', accessToken)
+        .cookie('refreshToken', refreshToken)
+        .send(ApiResponse.ok('Tokens are refreshed'));
 }
