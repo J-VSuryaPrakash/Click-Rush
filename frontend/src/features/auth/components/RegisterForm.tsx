@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form"
-import { registerSchema, type RegisterFromData } from "../schemas/auth.schema"
+import { registerSchema, type RegisterFormData } from "../schemas/auth.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { registerUser } from "@/api/auth.api";
 
 function RegisterForm() {
 
@@ -9,10 +10,11 @@ function RegisterForm() {
         handleSubmit,
         reset,
         formState: { errors }
-    } = useForm<RegisterFromData>({ resolver: zodResolver(registerSchema), mode: 'onChange' });
+    } = useForm<RegisterFormData>({ resolver: zodResolver(registerSchema), mode: 'onChange' });
 
-    const registerFormSubmit = (data: RegisterFromData) => {
-        console.log(data);
+    const registerFormSubmit = async (data: RegisterFormData) => {
+        const res = await registerUser(data);
+        console.log(res)
         reset();
     }
 

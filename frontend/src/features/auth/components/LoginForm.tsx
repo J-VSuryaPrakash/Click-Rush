@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
-import { loginSchema, type LoginFromData } from "../schemas/auth.schema";
+import { loginSchema, type LoginFormData } from "../schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loginUser } from '@/api/auth.api';
 
 
 function LoginForm() {
@@ -10,13 +11,19 @@ function LoginForm() {
         handleSubmit,
         reset,
         formState: { errors }
-    } = useForm<LoginFromData>({ resolver: zodResolver(loginSchema), mode: 'onSubmit' });
+    } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: 'onSubmit' });
 
 
 
-    const loginFormSubmit = (data : LoginFromData) => {
-        console.log(data);
-        reset()
+    const loginFormSubmit = async (data: LoginFormData) => {
+        try {
+            const res = await loginUser(data);
+            reset()
+            // redirect to dasahboard;
+        } catch (error) {
+            
+        }
+
     }
 
     return (
