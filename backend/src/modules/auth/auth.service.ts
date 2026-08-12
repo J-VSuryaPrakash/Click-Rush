@@ -73,7 +73,8 @@ const loginUser = async (data: LoginSchema) => {
         .returning({
             id: users.id,
             name: users.username,
-            email: users.email
+            email: users.email,
+            score: users.bestScore
         })
 
     return { accessToken, refreshToken, userData };

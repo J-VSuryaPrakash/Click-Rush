@@ -15,11 +15,15 @@ app.use(cookieParser());
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
-import gameRoutes from "./modules/game_sessions/game.router.js"
+import gameRoutes from "./modules/game_sessions/game.router.js";
+import dailyLeaderRoutes from "./modules/dailyleaderboard/dailyleaderboard.routes.js";
+import weeklyLeaderRoutes from "./modules/weeklyleaderboard/weeklyleaderboard.routes.js";
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/game/', gameRoutes);
+app.use('/api/daily/', dailyLeaderRoutes);
+app.use('/api/weekly', weeklyLeaderRoutes);
 
 app.get('/health', (req, res) => {
     res.send('The server is healthy!');
