@@ -40,7 +40,8 @@ const registerUser = async (data: RegisterSchema) => {
         .returning({
             id: users.id,
             name: users.username,
-            email: users.email
+            email: users.email,
+            score: users.bestScore
         })
 
     return { newUser, accessToken, refreshToken };
@@ -67,7 +68,7 @@ const loginUser = async (data: LoginSchema) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    const userData = await db.update(users)
+    const [userData] = await db.update(users)
         .set({ refreshToken: refreshToken })
         .where(eq(users.id, user.id))
         .returning({

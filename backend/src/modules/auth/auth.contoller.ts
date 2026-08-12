@@ -24,7 +24,7 @@ export const login = async (req: Request, res: Response) => {
 
     const { accessToken, refreshToken, userData } = await loginUser(req.body);
 
-    return res.status(201)
+    return res.status(200)
         .cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: true,
@@ -35,7 +35,7 @@ export const login = async (req: Request, res: Response) => {
             secure: true,
             sameSite: 'none'
         })
-        .json(ApiResponse.created('User successfully loggedin', userData));
+        .json(ApiResponse.ok('User successfully loggedin', userData));
 }
 
 export const logout = async (req: Request, res: Response) => {
