@@ -1,8 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { loginSchema, type LoginFormData } from "../schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginUser } from '@/api/auth.api';
-
+import { useAuth } from '@/hooks/useAuth';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 function LoginForm() {
 
@@ -13,43 +16,101 @@ function LoginForm() {
         formState: { errors }
     } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: 'onSubmit' });
 
-
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     const loginFormSubmit = async (data: LoginFormData) => {
-        try {
-            const res = await loginUser(data);
-            reset()
-            // redirect to dasahboard;
-        } catch (error) {
-            
-        }
-
+        login.mutate(
+            { ...data },
+            {
+                onSuccess: () => {
+                    reset(),
+                        navigate({
+                            to: '/game',
+                        })
+                },
+                onError: (err: any) => {
+                    console.log("Login failed", err);
+                }
+            }
+        )
     }
 
     return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
 
-        <div>
-            <div>
-                <form onSubmit={handleSubmit(loginFormSubmit)}>
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-2xl font-semibold text-gray-900">
+                        Welcome back
+                    </h1>
 
-                    <div>
-                        <label >Email</label>
-                        <input {...register("email")} placeholder='you@example.com' />
+                    <p className="mt-2 text-sm text-gray-500">
+                        Login to continue playing
+                    </p>
+                </div>
+
+                <form
+                    onSubmit={handleSubmit(loginFormSubmit)}
+                    className="flex flex-col gap-5"
+                >
+                    {/* Email */}
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="email">
+                            Email
+                        </Label>
+
+                        <Input
+                            id="email"
+                            type="email"
+                            {...register("email")}
+                            placeholder="you@example.com"
+                        />
                     </div>
 
-                    <div>
-                        <label >Password</label>
-                        <input {...register("password")} placeholder='password' type='password' />
+                    {/* Password */}
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="password">
+                            Password
+                        </Label>
+
+                        <Input
+                            id="password"
+                            type="password"
+                            {...register("password")}
+                            placeholder="Enter your password"
+                        />
                     </div>
 
-                    {(errors.email || errors.password) && <p>{"Invalid email or password"}</p>}
+                    {/* Error */}
+                    {(errors.email || errors.password) && (
+                        <p className="text-sm text-red-600">
+                            Invalid email or password
+                        </p>
+                    )}
 
-                    <input type="submit" placeholder='Login' />
-                    <p> New Player ? Register </p>
+                    {/* Submit */}
+                    <Button
+                        type="submit"
+                        className="mt-2 w-full"
+                    >
+                        Login
+                    </Button>
+
+                    {/* Register */}
+                    <p className="text-center text-sm text-gray-500">
+                        New player?{" "}
+                        <button
+                            type="button"
+                            className="font-medium text-gray-900 hover:underline hover:cursor-pointer"
+                        >
+                            <Link to='/register'>Register</Link>
+                        </button>
+                    </p>
                 </form>
             </div>
-        </div>
-
+        </div >
     )
 }
 

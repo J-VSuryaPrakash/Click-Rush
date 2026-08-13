@@ -13,21 +13,24 @@ interface User {
 export const registerUser = async (data: RegisterFormData) => {
 
     const response = await api.post('/auth/register', data);
-    
-    return response.data
 
+    return response.data
 }
 
 export const loginUser = async (data: LoginFormData) => {
-    try {
-        const response = await api.post<ApiResponse<User>>('/auth/login', data);
-        return response.data;
-    } catch (err) {
-        throw err;
-    }
+
+    const response = await api.post<ApiResponse<User>>('/auth/login', data);
+
+    return response.data;
 }
 
 export const logoutUser = async () => {
     await api.post('/auth/logout')
 }
 
+export const getCurrentUser = async () => {
+
+    const response = await api.get<ApiResponse<User>>("/auth/me");
+
+    return response.data;
+};
