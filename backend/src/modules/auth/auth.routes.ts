@@ -1,4 +1,4 @@
-import { createUser, login, logout, refresh } from "./auth.contoller.js"
+import { createUser, getMe, login, logout, refresh } from "./auth.contoller.js"
 import { Router } from 'express';
 import validate from "../../common/middleware/validate.middleware.js";
 import RegisterDTO from "./dto/register.dto.js";
@@ -11,5 +11,6 @@ router.post('/register', validate(RegisterDTO), createUser);
 router.post('/login', validate(LoginDTO), login);
 router.post('/logout', authMiddleware, logout);
 router.post('/tokenrefresh', refresh);
+router.get('/me', authMiddleware, getMe);
 
 export default router;

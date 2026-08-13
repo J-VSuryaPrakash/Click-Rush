@@ -74,8 +74,7 @@ const loginUser = async (data: LoginSchema) => {
         .returning({
             id: users.id,
             name: users.username,
-            email: users.email,
-            score: users.bestScore
+            email: users.email
         })
 
     return { accessToken, refreshToken, userData };
@@ -113,9 +112,22 @@ const tokenRefresh = async (token: string) => {
     return { accessToken, refreshToken };
 }
 
+const getUser = async (id: string) => {
+    const [user] = await db.select({
+        id: users.id,
+        name: users.username,
+        email: users.email,
+        bestScore: users.bestScore,
+        bestScoreAt: users.bestScoreAt
+    }).from(users).where(eq(users.id, id));
+
+    return user;
+}
+
 export {
     registerUser,
     loginUser,
     logoutUser,
-    tokenRefresh
+    tokenRefresh,
+    getUser
 }

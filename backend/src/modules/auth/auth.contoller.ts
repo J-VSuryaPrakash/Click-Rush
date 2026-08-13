@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import ApiResponse from "../../common/utils/ApiResponse.js";
-import { registerUser, loginUser, logoutUser, tokenRefresh } from "./auth.service.js";
+import { registerUser, loginUser, logoutUser, tokenRefresh, getUser } from "./auth.service.js";
 
 export const createUser = async (req: Request, res: Response) => {
 
@@ -58,3 +58,10 @@ export const refresh = async (req: Request, res: Response) => {
         .cookie('refreshToken', refreshToken)
         .send(ApiResponse.ok('Tokens are refreshed', null));
 }
+
+export const getMe = async (req: Request, res: Response)=>{
+
+    const user = await getUser(req.user?.id!);
+    
+    return res.status(200).json(ApiResponse.ok('User fetched successfully', user));
+} 
