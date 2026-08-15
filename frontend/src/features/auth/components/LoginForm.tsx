@@ -6,6 +6,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { queryClient } from '@/lib/queryClient';
 
 function LoginForm() {
 
@@ -24,10 +25,15 @@ function LoginForm() {
             { ...data },
             {
                 onSuccess: () => {
-                    reset(),
+                    queryClient.invalidateQueries({
+                        queryKey: ["auth", "me"],
+                    }).then(() => {
+                        reset(),
                         navigate({
                             to: '/game',
                         })
+                    })
+
                 },
                 onError: (err: any) => {
                     console.log("Login failed", err);

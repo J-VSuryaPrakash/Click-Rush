@@ -6,7 +6,8 @@ import type { ApiResponse } from "@/types/ApiResponse.type";
 interface User {
     id: string,
     name: string,
-    score: number,
+    bestScore: number,
+    bestScoreAt: string,
     email: string
 }
 
