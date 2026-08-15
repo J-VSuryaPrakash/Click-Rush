@@ -10,7 +10,7 @@ const httpServer = http.createServer(app);
 dotenv.config();
 app.use(express.json());
 app.use(cors({
-    origin: 'https://click-rush-silk.vercel.app/',
+    origin: 'https://click-rush-silk.vercel.app',
     credentials: true
 }));
 app.use(cookieParser());
