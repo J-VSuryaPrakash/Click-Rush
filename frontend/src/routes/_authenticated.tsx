@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import Navbar from "@/features/game/components/Navbar";
+import Navbar from "@/components/Navbar";
 
 export const Route = createFileRoute("/_authenticated")({
     component: AuthenticatedLayout,

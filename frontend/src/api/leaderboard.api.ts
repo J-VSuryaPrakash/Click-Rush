@@ -20,6 +20,6 @@ export const getAllWeeklyLeaders = async() => {
 }
 
 export const getAllGlobalLeaders = async() => {
-    const response = await api.get<ApiResponse<Leader[]>>('/global/globaleaders');
+    const response = await api.get<ApiResponse<Leader[]>>('/user/leaders');
     return response.data.data;
 }
