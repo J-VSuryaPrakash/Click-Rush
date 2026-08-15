@@ -12,7 +12,6 @@ function Board() {
 
     const {
         data: leaders = [],
-        isLoading,
     } = useLeaderBoard(category);
     console.log(leaders);
     return (
