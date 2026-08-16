@@ -4,8 +4,11 @@ import { dailyLeaderboards, gameSessions, users, weeklyLeaderboards } from "../.
 import type { ScoreType } from "./dto/score.dto.js"
 import ApiError from "../../common/utils/ApiError.js";
 import getWeekStart from "./game.util.js";
+import { isoWeekKey, secondsUntilNextIsoWeek, secondsUntilNextIstDay, todayKey } from "../../common/utils/periodKeys.js";
+import { redisClient } from "../../services/redisclient.js";
 
 const GAME_DURATION_MS = 60_000;
+const MAX_CLICKS_ALLOWED = Number(process.env.MAX_CLICKS_ALLOWED);
 
 const getIstDate = (date: Date): string => {
     return date.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
@@ -61,9 +64,13 @@ export const startGame = async (userId: string) => {
 };
 
 export const completeGame = async (userId: string, gameId: string, data: ScoreType) => {
-    return await db.transaction(async (tx) => {
+    const game = await db.transaction(async (tx) => {
         const completedAt = new Date();
-
+        if (data.score > MAX_CLICKS_ALLOWED) {
+            throw ApiError.invalidData(
+                "Invalid score: maximum allowed score exceeded"
+            );
+        }
         const [game] = await tx.update(gameSessions)
             .set({
                 status: "COMPLETED",
@@ -164,5 +171,43 @@ export const completeGame = async (userId: string, gameId: string, data: ScoreTy
             userScore: userScore?.userScore ?? null,
         };
     });
+
+    if (!game.endedAt) {
+        throw ApiError.serverError(
+            "Game completion timestamp is missing",
+        );
+    }
+
+    const today = todayKey(game.endedAt);
+    const week = isoWeekKey(game.endedAt);
+
+    const dailyKey = `clickrush:leaderboard:daily:${today}`;
+    const weeklyKey = `clickrush:leaderboard:weekly:${week}`;
+
+    await redisClient.zadd(
+        dailyKey,
+        "GT",
+        game.score,
+        userId,
+    );
+
+    await redisClient.zadd(
+        weeklyKey,
+        "GT",
+        game.score,
+        userId,
+    );
+
+    await redisClient.expire(
+        dailyKey,
+        secondsUntilNextIstDay(game.endedAt),
+    );
+
+    await redisClient.expire(
+        weeklyKey,
+        secondsUntilNextIsoWeek(game.endedAt),
+    );
+
+    return game;
 };
 

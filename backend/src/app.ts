@@ -10,7 +10,7 @@ const httpServer = http.createServer(app);
 dotenv.config();
 app.use(express.json());
 app.use(cors({
-    origin: 'https://click-rush-silk.vercel.app',
+    origin: 'http://localhost:5173',
     credentials: true
 }));
 app.use(cookieParser());
