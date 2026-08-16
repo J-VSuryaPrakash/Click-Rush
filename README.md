@@ -741,48 +741,6 @@ game_sessions_status_expires_at_idx
 
 ---
 
-# Frontend State Management
-
-The frontend uses TanStack Query for server state.
-
-Typical queries include:
-
-```text
-Current User
-Daily Leaderboard
-Weekly Leaderboard
-User History
-User Ranks
-```
-
-Mutations include:
-
-```text
-Login
-Register
-Start Game
-Complete Game
-Logout
-```
-
-After mutations that change server state, relevant TanStack Query caches should be invalidated.
-
-For example, after completing a game:
-
-```text
-Complete Game
-     │
-     ├── invalidate current user
-     ├── invalidate daily leaderboard
-     ├── invalidate weekly leaderboard
-     ├── invalidate user ranks
-     └── invalidate game history
-```
-
-This allows the UI to display the updated data without manually synchronizing multiple pieces of state.
-
----
-
 # Redis
 
 Redis is **not currently required** for the core ClickRush implementation.
@@ -806,29 +764,6 @@ Redis can be introduced later if ClickRush needs features such as:
 - Temporary game state
 
 For the current version, keeping the architecture simple with PostgreSQL is intentional.
-
----
-
-# Future Improvements
-
-Potential future improvements include:
-
-- Redis-based leaderboard caching
-- WebSocket-based real-time leaderboard updates
-- Anti-cheat mechanisms
-- Rate limiting
-- Better score validation
-- Game replay/statistics
-- Player profiles
-- Achievements
-- Streaks
-- Global all-time leaderboard
-- Friend leaderboards
-- Multiplayer game modes
-- Improved game analytics
-- Horizontal backend scaling
-
----
 
 # Running the Project
 
@@ -859,58 +794,6 @@ Start the development server:
 ```bash
 npm run dev
 ```
-
----
-
-# Development Principles
-
-ClickRush follows a few important principles:
-
-### Backend is the source of truth
-
-Important game state should not rely entirely on the frontend.
-
-### Validate user input
-
-Requests are validated before reaching controllers.
-
-```text
-Request
-  ↓
-Validation
-  ↓
-Authentication
-  ↓
-Controller
-  ↓
-Service
-  ↓
-Database
-```
-
-### Keep leaderboard periods explicit
-
-Daily leaderboards use:
-
-```text
-leaderboardDate
-```
-
-Weekly leaderboards use:
-
-```text
-weekStart
-```
-
-### Calculate ranks dynamically
-
-Ranks should be derived from scores rather than permanently stored.
-
-### Keep infrastructure simple
-
-Additional infrastructure such as Redis should only be introduced when the application has a concrete requirement for it.
-
----
 
 # Project Goal
 
