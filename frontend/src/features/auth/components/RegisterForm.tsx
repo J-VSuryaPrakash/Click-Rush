@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form"
 import { registerSchema, type RegisterFormData } from "../schemas/auth.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { registerUser } from "@/api/auth.api";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
