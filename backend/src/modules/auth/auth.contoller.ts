@@ -43,9 +43,17 @@ export const logout = async (req: Request, res: Response) => {
     logoutUser(req.user?.id!);
 
     return res.status(200)
-        .clearCookie('accessToken')
-        .clearCookie('refreshToken')
-        .json(ApiResponse.ok('Uses logout successful', null))
+        .clearCookie('accessToken',{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        })
+        .clearCookie('refreshToken',{
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        })
+        .json(ApiResponse.ok('User logout successful', null))
 
 }
 
