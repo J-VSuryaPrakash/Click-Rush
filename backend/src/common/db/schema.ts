@@ -2,6 +2,7 @@ import {
     date,
     index,
     integer,
+    pgEnum,
     pgTable,
     text,
     timestamp,
@@ -37,6 +38,12 @@ export const users = pgTable("users",
 
 /* GAME SESSIONS */
 
+export const gameSessionStatusEnum = pgEnum("game_status", [
+    "ACTIVE",
+    "COMPLETED",
+    "EXPIRED",
+]);
+
 export const gameSessions = pgTable("game_sessions",
     {
         id: uuid("id").defaultRandom().primaryKey(),
@@ -45,14 +52,21 @@ export const gameSessions = pgTable("game_sessions",
             .references(() => users.id, {
                 onDelete: "cascade",
             }),
-        score: integer("score").notNull(),
+        status: gameSessionStatusEnum("status").notNull().default("ACTIVE"),
         startedAt: timestamp("started_at", {
+            withTimezone: true,
+        }).notNull(),
+        expiresAt: timestamp("expires_at", {
             withTimezone: true,
         }).notNull(),
         endedAt: timestamp("ended_at", {
             withTimezone: true,
-        }).notNull(),
-    }
+        }),
+        score: integer("score").notNull().default(0),
+    },
+    (table) => [
+        index("game_sessions_status_expires_at_idx").on(table.status, table.expiresAt),
+    ]
 );
 
 

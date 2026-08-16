@@ -5,9 +5,7 @@ import BaseDTO from '../../../common/dto/base.dto.js';
 class ScoreDTO extends BaseDTO{
 
     static schema = z.object({
-        score: z.number().min(0),
-        startedAt: z.iso.datetime().transform((val) => new Date(val)),
-        endedAt: z.iso.datetime().transform((val) => new Date(val))
+        score: z.number().int().min(0),
     })
 
 }

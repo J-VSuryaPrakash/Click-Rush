@@ -1,10 +1,12 @@
 import type { ApiResponse } from "@/types/ApiResponse.type";
 import { api } from "./api";
-import type { SaveGame } from "@/features/game/schema/game.schem";
 
-export const saveGame = async (data: SaveGame) => {
+export const startGame = async () => {
+    const response = await api.post<ApiResponse<{ gameId: string; startedAt: string; expiresAt: string }>>('/game/games/start');
+    return response.data.data;
+}
 
-    const response = await api.post<ApiResponse<SaveGame>>('/game/gamescore', data)
-
+export const completeGame = async (gameId: string, data: { score: number }) => {
+    const response = await api.post<ApiResponse<any>>(`/game/games/${gameId}/complete`, data);
     return response.data.data;
 }
