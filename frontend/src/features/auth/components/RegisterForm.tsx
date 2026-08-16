@@ -5,7 +5,9 @@ import { registerUser } from "@/api/auth.api";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
+import Loading from "@/components/Loading";
 
 
 function RegisterForm() {
@@ -17,10 +19,24 @@ function RegisterForm() {
         formState: { errors }
     } = useForm<RegisterFormData>({ resolver: zodResolver(registerSchema), mode: 'onChange' });
 
+    const navigate = useNavigate();
+    const { registerUser, isLoading } = useAuth();
     const registerFormSubmit = async (data: RegisterFormData) => {
-        const res = await registerUser(data);
-        console.log(res)
-        reset();
+        registerUser.mutate(
+            { ...data },
+            {
+                onSuccess: () => {
+                    reset(),
+                        navigate({ to: '/game' })
+                }
+            }
+        )
+    }
+
+    if (isLoading) {
+        return (
+            <Loading />
+        )
     }
 
     return (

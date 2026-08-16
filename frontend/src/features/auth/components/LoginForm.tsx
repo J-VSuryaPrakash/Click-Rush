@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { queryClient } from '@/lib/queryClient';
+import Loading from '@/components/Loading';
 
 function LoginForm() {
 
@@ -17,7 +18,7 @@ function LoginForm() {
         formState: { errors }
     } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: 'onSubmit' });
 
-    const { login } = useAuth();
+    const { login, isLoading } = useAuth();
     const navigate = useNavigate();
 
     const loginFormSubmit = async (data: LoginFormData) => {
@@ -29,9 +30,9 @@ function LoginForm() {
                         queryKey: ["auth", "me"],
                     }).then(() => {
                         reset(),
-                        navigate({
-                            to: '/game',
-                        })
+                            navigate({
+                                to: '/game',
+                            })
                     })
 
                 },
@@ -40,6 +41,10 @@ function LoginForm() {
                 }
             }
         )
+    }
+
+    if (isLoading) {
+        <Loading />
     }
 
     return (

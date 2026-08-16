@@ -45,7 +45,7 @@ export const useAuth = () => {
         isLoading: isLoading || isFetching,
         login: loginMutation,
         logout: logoutMutation,
-        register: registerMutation
+        registerUser: registerMutation
     }
 
 }
