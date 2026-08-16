@@ -21,14 +21,14 @@ export const useAuth = () => {
         mutationFn: (data: LoginFormData) => loginUser(data),
         onSuccess: (userData) => {
             queryClient.setQueryData(['auth'], userData),
-            queryClient.invalidateQueries({ queryKey: ['auth'] })
+                queryClient.invalidateQueries({ queryKey: ['auth'] })
         }
     })
 
     const logoutMutation = useMutation({
         mutationFn: () => logoutUser(),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["auth"] });
+            queryClient.removeQueries({ queryKey: ['auth', 'me'] })
         },
     });
 
