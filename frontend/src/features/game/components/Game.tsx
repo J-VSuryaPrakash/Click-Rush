@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/api/auth.api";
 import GameResultModal from "./GameResultModal";
 import { useStartGame, useCompleteGame } from "@/hooks/useGame";
+import Loading from "@/components/Loading";
 
 type Status = "idle" | "starting" | "playing" | "finished" | "completing" | "completed" | "error";
 
@@ -85,9 +86,7 @@ function Game() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-1 items-center justify-center">
-                <p className="text-sm font-medium text-slate-400">Loading...</p>
-            </div>
+            <Loading />
         );
     }
 

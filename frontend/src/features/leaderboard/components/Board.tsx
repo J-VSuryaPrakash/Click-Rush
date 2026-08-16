@@ -13,7 +13,7 @@ function Board() {
     const {
         data: leaders = [],
     } = useLeaderBoard(category);
-    console.log(leaders);
+    
     return (
         <div className="min-h-screen bg-slate-950 px-4 py-6 sm:px-6">
 
