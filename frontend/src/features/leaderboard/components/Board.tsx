@@ -3,6 +3,7 @@ import TableRow from "./TableRow";
 import { Button } from "@/components/ui/button";
 import { useLeaderBoard } from "@/hooks/useLeaderBoard";
 import type { Leader } from "@/api/leaderboard.api";
+import EmptyState from "@/components/EmptyState";
 
 function Board() {
 
@@ -12,8 +13,19 @@ function Board() {
 
     const {
         data: leaders = [],
+        isLoading
     } = useLeaderBoard(category);
-    
+
+    if (!isLoading && leaders.length === 0) {
+        return (
+            <EmptyState
+                title="No players yet"
+                description="Be the first player to complete a game and claim your place on the leaderboard."
+                buttonText="Play Now"
+            />
+        )
+    }
+
     return (
         <div className="min-h-screen bg-slate-950 px-4 py-6 sm:px-6">
 

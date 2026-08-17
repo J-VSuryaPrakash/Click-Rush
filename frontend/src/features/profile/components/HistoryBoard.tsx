@@ -2,6 +2,7 @@ import History from "./History.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/api/auth.api";
 import { useProfile, useRanks } from "@/hooks/useProfile.ts";
+import EmptyState from "@/components/EmptyState.tsx";
 
 interface HistoryData {
     id: number;
@@ -26,6 +27,16 @@ function HistoryBoard() {
     } = useRanks();
 
     const history: HistoryData[] = profile?.gameHistory ?? [];
+
+    if (history.length === 0) {
+        return (
+            <EmptyState
+                title="No games played yet"
+                description="Your game profile will appear here once you complete your first ClickRush game."
+                buttonText="Play Now"
+            />
+        )
+    }
 
     return (
         <div className="min-h-screen bg-slate-950 px-4 py-6 sm:px-6">
