@@ -9,7 +9,7 @@ import LiveScore from "./LiveScore";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/api/auth.api";
 import GameResultModal from "./GameResultModal";
-import { useStartGame, useCompleteGame } from "@/hooks/useGame";
+import { useGame } from "@/hooks/useGame";
 import Loading from "@/components/Loading";
 
 type Status = "idle" | "starting" | "playing" | "finished" | "completing" | "completed" | "error";
@@ -28,8 +28,7 @@ function Game() {
 
     const navigate = useNavigate();
 
-    const startMutation = useStartGame();
-    const completeMutation = useCompleteGame();
+    const { startGame: startMutation, completeGame: completeMutation, abandonGame: abandonMutation } = useGame();
 
     // When countdown reaches zero, mark locally finished (do NOT call server)
     useEffect(() => {
@@ -77,11 +76,17 @@ function Game() {
     };
 
     const resetGame = () => {
-        setLiveScore(0);
-        setTimeLeft(60);
-        setActiveGameId(null);
-        setIsCompleting(false);
-        setGameStatus("idle");
+        if (activeGameId) {
+            abandonMutation.mutate(activeGameId, {
+                onSuccess: () => {
+                    setLiveScore(0);
+                    setTimeLeft(60);
+                    setActiveGameId(null);
+                    setIsCompleting(false);
+                    setGameStatus("idle");
+                }
+            });
+        }
     };
 
     if (isLoading) {
@@ -127,7 +132,23 @@ function Game() {
                                     </div>
                                 </div>
 
-                                <Button variant="outline" className="h-12 w-full rounded-xl" onClick={() => navigate({ to: "/leaderboard" })}>
+                                <Button variant="outline" className="
+                                        h-12
+                                        w-full
+                                        rounded-xl
+                                        border-amber-200
+                                        bg-slate-900
+                                        font-bold
+                                        tracking-wide
+                                        text-amber-200/80
+                                        shadow-lg
+                                        transition-all
+                                        hover:border-violet-400
+                                        hover:bg-violet-500/10
+                                        hover:text-violet-300
+                                        hover:cursor-pointer
+                                    "
+                                    onClick={() => navigate({ to: "/leaderboard" })}>
                                     <Trophy className="mr-2 h-4 w-4" /> Leaderboard
                                 </Button>
                             </div>
@@ -135,13 +156,33 @@ function Game() {
 
                         <div className="flex shrink-0 justify-center pb-1">
                             {gameStatus !== "playing" && (
-                                <Button size="lg" className="h-12 w-full rounded-xl bg-violet-600 px-8 text-base font-black text-white sm:w-48" onClick={handleStart}>
+                                <Button size="lg" className="h-12 w-full rounded-xl bg-violet-600 px-8 text-base font-black text-white sm:w-48 hover:bg-violet-800 hover:cursor-pointer" onClick={handleStart}>
                                     <Play className="mr-2 h-4 w-4 fill-current" /> Start Game
                                 </Button>
                             )}
 
                             {gameStatus === "playing" && (
-                                <Button size="lg" variant="outline" className="h-12 w-full rounded-xl sm:w-48" onClick={resetGame}>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="h-12  sm:w-48h-12
+                                        w-full
+                                        rounded-xl
+                                        border-rose-500/30
+                                        bg-slate-900
+                                        px-8
+                                        text-base
+                                        font-semibold
+                                        text-rose-400
+                                        shadow-lg
+                                        transition-all
+                                        hover:border-rose-400
+                                        hover:bg-rose-500/10
+                                        hover:text-rose-300
+                                        sm:w-48
+                                        hover: cursor-pointer
+                                        "
+                                    onClick={resetGame}>
                                     <RotateCcw className="mr-2 h-4 w-4" /> Reset Game
                                 </Button>
                             )}

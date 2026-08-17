@@ -74,6 +74,7 @@ function Navbar() {
                             hover:border-violet-500/50
                             hover:bg-violet-500/10
                             hover:text-violet-300
+                            hover:cursor-pointer
                         "
                         onClick={() => navigate({ to: "/profile" })}
                     >
@@ -99,7 +100,7 @@ function Navbar() {
                     >
                         <LogOut className="h-4 w-4 sm:mr-2" />
 
-                        <span className="hidden sm:inline">
+                        <span className="hidden sm:inline hover:cursor-pointer">
                             Logout
                         </span>
                     </Button>

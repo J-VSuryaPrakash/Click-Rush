@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import { completeGame, startGame } from "./game.service.js"
+import { abandonGame, completeGame, startGame } from "./game.service.js"
 import ApiResponse from "../../common/utils/ApiResponse.js";
 import ApiError from "../../common/utils/ApiError.js";
 
@@ -24,3 +24,18 @@ export const submitGame = async (req: Request, res: Response) => {
 
    return res.status(200).json(ApiResponse.ok('Game completed successfully', game));
 }
+
+export const abandonActiveGame = async (req: Request, res: Response) => {
+
+   const gameId = Array.isArray(req.params.gameId)
+      ? req.params.gameId[0]
+      : req.params.gameId;
+
+   if (!gameId) {
+      throw ApiError.invalidData('Invalid game id');
+   }
+
+   const game = await abandonGame(req.user?.id!, gameId);
+
+   return res.status(200).json(ApiResponse.ok('Game abandoned successfully', game));
+};

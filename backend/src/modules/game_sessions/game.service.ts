@@ -211,3 +211,17 @@ export const completeGame = async (userId: string, gameId: string, data: ScoreTy
     return game;
 };
 
+
+export const abandonGame = async (userId: string, gameId: string) => {
+
+    const game = await db.update(gameSessions).set({
+        status: "ABANDONED",
+        endedAt: new Date()
+    }).where(and(eq(gameSessions.id, gameId), eq(gameSessions.userId, userId), eq(gameSessions.status, "ACTIVE"))).returning({
+        gameId: gameSessions.id,
+        status: gameSessions.status,
+        endedAt: gameSessions.endedAt
+    });
+
+    return game;
+}

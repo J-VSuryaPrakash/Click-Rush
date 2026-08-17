@@ -1,0 +1,1 @@
+ALTER TYPE "game_status" ADD VALUE 'ABANDONED';

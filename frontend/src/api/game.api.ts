@@ -10,3 +10,8 @@ export const completeGame = async (gameId: string, data: { score: number }) => {
     const response = await api.post<ApiResponse<any>>(`/game/games/${gameId}/complete`, data);
     return response.data.data;
 }
+
+export const abandonGame = async (gameId: string) => {
+    const response = await api.post<ApiResponse<any>>(`/game/games/${gameId}/abandon`);
+    return response.data.data;
+}

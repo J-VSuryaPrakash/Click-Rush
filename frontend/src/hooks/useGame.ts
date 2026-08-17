@@ -1,16 +1,10 @@
-import { startGame, completeGame } from "@/api/game.api";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { startGame, completeGame, abandonGame } from "@/api/game.api";
+import { queryClient } from "@/lib/queryClient";
+import { useMutation } from "@tanstack/react-query";
 
-export const useStartGame = () => {
-    return useMutation({
-        mutationFn: () => startGame(),
-    });
-};
+export const useGame = () => {
 
-export const useCompleteGame = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
+    const completeGameMutation = useMutation({
         mutationFn: ({ gameId, score }: { gameId: string; score: number }) => completeGame(gameId, { score }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["profile"] });
@@ -19,4 +13,19 @@ export const useCompleteGame = () => {
             queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
         },
     });
-};
+
+    const startGameMutation = useMutation({
+        mutationFn: () => startGame()
+    })
+
+    const abandonGameMutation = useMutation({
+        mutationFn: (gameId: string) => abandonGame(gameId)
+    })
+
+    return {
+        startGame: startGameMutation,
+        completeGame: completeGameMutation,
+        abandonGame: abandonGameMutation
+    }
+
+}
