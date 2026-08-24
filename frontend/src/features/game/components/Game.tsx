@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Play, RotateCcw, Trophy } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import Arena from "./Arena";
@@ -7,19 +6,15 @@ import Timer from "./Timer";
 import HighScore from "./HighScore";
 import LiveScore from "./LiveScore";
 import { Button } from "@/components/ui/button";
-import { getCurrentUser } from "@/api/auth.api";
 import GameResultModal from "./GameResultModal";
 import { useGame } from "@/hooks/useGame";
 import Loading from "@/components/Loading";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 type Status = "idle" | "starting" | "playing" | "finished" | "completing" | "completed" | "error";
 
 function Game() {
-    const { data: user, isLoading } = useQuery({
-        queryKey: ["auth", "me"],
-        queryFn: getCurrentUser,
-    });
-
+    const { user, isLoading } = useCurrentUser();
     const [gameStatus, setGameStatus] = useState<Status>("idle");
     const [timeLeft, setTimeLeft] = useState<number>(60);
     const [liveScore, setLiveScore] = useState<number>(0);
@@ -114,7 +109,7 @@ function Game() {
                     <div className="flex h-full w-full flex-col gap-5">
                         <div className="grid min-h-0 flex-1 grid-cols-1 gap-5 lg:grid-cols-5">
                             <div className="order-2 min-h-[320px] lg:order-1 lg:col-span-4 lg:min-h-0">
-                                <Arena gameStatus={gameStatus} setLiveScore={setLiveScore} />
+                                <Arena gameStatus={gameStatus} setLiveScore={setLiveScore} gameId={activeGameId!} />
                             </div>
 
                             <div className="order-1 flex flex-col gap-4 lg:order-2 lg:col-span-1">

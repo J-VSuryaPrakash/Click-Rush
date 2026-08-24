@@ -15,3 +15,8 @@ export const abandonGame = async (gameId: string) => {
     const response = await api.post<ApiResponse<any>>(`/game/games/${gameId}/abandon`);
     return response.data.data;
 }
+
+export const storeBatchScore = async (gameId: string, data: number[]) => {
+    const response = await api.post<ApiResponse<any>>(`/game/games/${gameId}/batch-score`, { score: data });
+    return response.data.data;
+}

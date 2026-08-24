@@ -1,19 +1,50 @@
-import {memo} from "react";
+import { storeBatchScore } from "@/api/game.api";
+import { throttle } from "@/utils/throttle";
+import { memo } from "react";
+import { useRef } from "react";
 
 interface ArenaProps {
+    gameId: string;
     gameStatus: string;
     setLiveScore: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function Arena({
+    gameId,
     gameStatus,
     setLiveScore,
 }: ArenaProps) {
 
+    const lastClickTime = useRef<number | null>(null);
+    const batchIntervals = useRef<number[]>([]);
+
+    const sendBatchScore = throttle(() => {
+        const intervals = batchIntervals.current;
+
+        batchIntervals.current = [];
+
+        if (intervals.length === 0) return;
+
+        storeBatchScore(gameId!, intervals);
+    }, 500);
+
+
     const handleClick = () => {
         if (gameStatus !== "playing") return;
 
+        const now = performance.now();
+
+        if (lastClickTime.current !== null) {
+            const interval = now - lastClickTime.current;
+
+            batchIntervals.current.push(Number(Math.ceil(interval)));
+        }
+
+        lastClickTime.current = now;
+
         setLiveScore((prev) => prev + 1);
+
+        sendBatchScore();
     };
 
     return (
