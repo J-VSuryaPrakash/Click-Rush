@@ -1,8 +1,8 @@
 import History from "./History.tsx";
-import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "@/api/auth.api";
 import { useProfile, useRanks } from "@/hooks/useProfile.ts";
 import EmptyState from "@/components/EmptyState.tsx";
+import { useCurrentUser } from "@/hooks/useCurrentUser.ts";
+import Loading from "@/components/Loading.tsx";
 
 interface HistoryData {
     id: number;
@@ -13,10 +13,7 @@ interface HistoryData {
 function HistoryBoard() {
 
 
-    const { data: user } = useQuery({
-        queryKey: ["auth", "me"],
-        queryFn: getCurrentUser,
-    });
+    const { user, isLoading } = useCurrentUser();
 
     const {
         data: profile
@@ -27,6 +24,12 @@ function HistoryBoard() {
     } = useRanks();
 
     const history: HistoryData[] = profile?.gameHistory ?? [];
+
+    if (isLoading) {
+        return (
+            <Loading />
+        )
+    }
 
     if (history.length === 0) {
         return (

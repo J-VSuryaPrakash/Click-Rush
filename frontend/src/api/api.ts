@@ -14,12 +14,11 @@ api.interceptors.response.use((response: AxiosResponse) => {
     return response;
 }, async (errors) => {
     const originalRequest = errors.config as InternalAxiosRequestConfig & { _retry?: boolean }
-
     const isAuthRequest =
         originalRequest.url?.includes("/auth/login") ||
         originalRequest.url?.includes("/auth/register") ||
-        originalRequest.url?.includes("/auth/refresh");
-
+        originalRequest.url?.includes("/auth/tokenrefresh");
+        
     if (
         errors.response?.status === 401 &&
         !originalRequest._retry &&
@@ -27,11 +26,13 @@ api.interceptors.response.use((response: AxiosResponse) => {
     ) {
         originalRequest._retry = true;
         try {
-            await api.post('/auth/refresh');
+            await api.post('/auth/tokenrefresh');
             return api(originalRequest);
         } catch (refreshError) {
-            window.location.href = `${BASE_URL}/auth/login`;
+            window.location.href = `${window.location.origin}/login`;
             return Promise.reject(refreshError);
         }
     }
+
+    return Promise.reject(errors);
 })

@@ -1,7 +1,21 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import Navbar from "@/components/Navbar";
+import { getCurrentUser } from "@/api/auth.api";
 
 export const Route = createFileRoute("/_authenticated")({
+    beforeLoad: async ({ context }) => {
+        try {
+            await context.queryClient.ensureQueryData({
+                queryKey: ["auth", "me"],
+                queryFn: getCurrentUser,
+            });
+        } catch {
+            throw redirect({
+                to: "/login",
+            });
+        }
+    },
+
     component: AuthenticatedLayout,
 });
 

@@ -6,8 +6,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { queryClient } from '@/lib/queryClient';
-import Loading from '@/components/Loading';
+import { AxiosError } from 'axios';
 
 function LoginForm() {
 
@@ -15,36 +14,33 @@ function LoginForm() {
         register,
         handleSubmit,
         reset,
+        setError,
         formState: { errors }
     } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema), mode: 'onSubmit' });
 
-    const { login, isLoading } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const loginFormSubmit = async (data: LoginFormData) => {
         login.mutate(
             { ...data },
             {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["auth", "me"],
-                    }).then(() => {
-                        reset(),
-                            navigate({
-                                to: '/game',
-                            })
-                    })
-
+                onSuccess: async () => {
+                    reset(),
+                        navigate({
+                            to: '/game'
+                        })
                 },
                 onError: (err: any) => {
-                    console.log("Login failed", err);
+                    if(err instanceof AxiosError){
+                        setError("root", {
+                            type: "server",
+                            message: "Invalid email or password"
+                        })
+                    }
                 }
             }
         )
-    }
-
-    if (isLoading) {
-        <Loading />
     }
 
     return (
@@ -95,9 +91,9 @@ function LoginForm() {
                     </div>
 
                     {/* Error */}
-                    {(errors.email || errors.password) && (
+                    {(errors.root) && (
                         <p className="text-sm text-red-600">
-                            Invalid email or password
+                            {errors.root?.message}
                         </p>
                     )}
 

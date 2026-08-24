@@ -6,20 +6,20 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
-import Loading from "@/components/Loading";
-
+import { AxiosError } from "axios";
 
 function RegisterForm() {
 
     const {
         register,
         handleSubmit,
+        setError,
         reset,
         formState: { errors }
     } = useForm<RegisterFormData>({ resolver: zodResolver(registerSchema), mode: 'onChange' });
 
     const navigate = useNavigate();
-    const { registerUser, isLoading } = useAuth();
+    const { registerUser } = useAuth();
     const registerFormSubmit = async (data: RegisterFormData) => {
         registerUser.mutate(
             { ...data },
@@ -27,14 +27,16 @@ function RegisterForm() {
                 onSuccess: () => {
                     reset(),
                         navigate({ to: '/game' })
+                },
+                onError: (err) => {
+                    if(err instanceof AxiosError){
+                        setError("root", {
+                            type: "server",
+                            message: err.response?.data.error.message
+                        })
+                    }
                 }
             }
-        )
-    }
-
-    if (isLoading) {
-        return (
-            <Loading />
         )
     }
 
@@ -116,7 +118,11 @@ function RegisterForm() {
                             </p>
                         )}
                     </div>
-
+                    {errors.root && (
+                            <p className="text-xs text-red-600">
+                                {errors.root.message}
+                            </p>
+                        )}
                     {/* Submit */}
                     <Button
                         type="submit"
