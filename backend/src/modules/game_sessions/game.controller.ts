@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import { abandonGame, completeGame, startGame } from "./game.service.js"
+import { abandonGame, batchScore, completeGame, startGame } from "./game.service.js"
 import ApiResponse from "../../common/utils/ApiResponse.js";
 import ApiError from "../../common/utils/ApiError.js";
 
@@ -38,4 +38,19 @@ export const abandonActiveGame = async (req: Request, res: Response) => {
    const game = await abandonGame(req.user?.id!, gameId);
 
    return res.status(200).json(ApiResponse.ok('Game abandoned successfully', game));
+};
+
+export const storeBatchScore = async (req: Request, res: Response) => {
+
+   const gameId = Array.isArray(req.params.gameId)
+      ? req.params.gameId[0]
+      : req.params.gameId;
+
+   if (!gameId) {
+      throw ApiError.invalidData('Invalid game id');
+   }
+
+   await batchScore(req.user?.id!, gameId, req.body.batchClicks);
+
+   return res.status(200).json(ApiResponse.ok('Batch score stored successfully', null));
 };

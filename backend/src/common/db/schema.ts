@@ -42,7 +42,8 @@ export const gameSessionStatusEnum = pgEnum("game_status", [
     "ACTIVE",
     "COMPLETED",
     "EXPIRED",
-    "ABANDONED"
+    "ABANDONED",
+    "INVALID"
 ]);
 
 export const gameSessions = pgTable("game_sessions",

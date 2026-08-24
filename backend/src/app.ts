@@ -11,7 +11,9 @@ dotenv.config();
 app.use(express.json());
 app.use(cors({
     origin: 'https://click-rush-silk.vercel.app',
-    credentials: true
+    credentials: true,
+    methods: ['GET','POST','DELETE','UPDATE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie']
 }));
 app.use(cookieParser());
 
@@ -21,12 +23,14 @@ import userRoutes from "./modules/user/user.routes.js";
 import gameRoutes from "./modules/game_sessions/game.router.js";
 import dailyLeaderRoutes from "./modules/dailyleaderboard/dailyleaderboard.routes.js";
 import weeklyLeaderRoutes from "./modules/weeklyleaderboard/weeklyleaderboard.routes.js";
+import { errorMiddleware } from './common/middleware/globalError.middleware.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/game/', gameRoutes);
 app.use('/api/daily/', dailyLeaderRoutes);
 app.use('/api/weekly', weeklyLeaderRoutes);
+app.use(errorMiddleware)
 
 app.get('/health', (req, res) => {
     res.send('The server is healthy!');

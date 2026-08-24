@@ -6,6 +6,7 @@ import ApiError from "../../common/utils/ApiError.js";
 import getWeekStart from "./game.util.js";
 import { isoWeekKey, secondsUntilNextIsoWeek, secondsUntilNextIstDay, todayKey } from "../../common/utils/periodKeys.js";
 import { redisClient } from "../../services/redisclient.js";
+import { antiCheat } from "../../services/anti-cheat.js";
 
 const GAME_DURATION_MS = 60_000;
 const MAX_CLICKS_ALLOWED = Number(process.env.MAX_CLICKS_ALLOWED);
@@ -64,6 +65,29 @@ export const startGame = async (userId: string) => {
 };
 
 export const completeGame = async (userId: string, gameId: string, data: ScoreType) => {
+
+    const batches = (await redisClient.lrange(`game:${gameId}:batchClicks`, 0, -1)).map(Number);
+
+    const stats = antiCheat(batches);
+
+    if (!stats?.isCheating) {
+        const completedAt = new Date();
+        await db.update(gameSessions).set({
+            status: "INVALID",
+            score: 0,
+            endedAt: completedAt,
+        })
+        .where(and(
+            eq(gameSessions.id, gameId),
+            eq(gameSessions.userId, userId),
+            eq(gameSessions.status, "ACTIVE"),
+            lte(gameSessions.expiresAt, completedAt)
+        ));
+        
+        await redisClient.del(`game:${gameId}:batchClicks`);
+        throw ApiError.invalidData("Cheating detected based on click patterns");
+    }
+
     const game = await db.transaction(async (tx) => {
         const completedAt = new Date();
         if (data.score > MAX_CLICKS_ALLOWED) {
@@ -208,9 +232,10 @@ export const completeGame = async (userId: string, gameId: string, data: ScoreTy
         secondsUntilNextIsoWeek(game.endedAt),
     );
 
+    await redisClient.del(`game:${gameId}:batchClicks`);
+
     return game;
 };
-
 
 export const abandonGame = async (userId: string, gameId: string) => {
 
@@ -225,3 +250,33 @@ export const abandonGame = async (userId: string, gameId: string) => {
 
     return game;
 }
+
+export const batchScore = async (userId: string, gameId: string, batchClicks: number) => {
+    const [session] = await db.select({
+        id: gameSessions.id,
+        userId: gameSessions.userId,
+        status: gameSessions.status,
+    })
+        .from(gameSessions)
+        .where(eq(gameSessions.id, gameId))
+        .limit(1);
+
+    if (!session) {
+        throw ApiError.invalidData("Game session not found");
+    }
+
+    if (session.userId !== userId) {
+        throw ApiError.invalidData("You do not have permission to modify this game session");
+    }
+
+    if (session.status !== "ACTIVE") {
+        throw ApiError.invalidData("Game session is no longer active");
+    }
+
+    await redisClient.rpush(
+        `game:${gameId}:batchClicks`,
+        batchClicks
+    );
+
+    return { success: true };
+};
