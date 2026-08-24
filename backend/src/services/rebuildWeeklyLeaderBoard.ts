@@ -10,8 +10,6 @@ import {
 } from "../common/utils/periodKeys.js";
 import getWeekStart from "../modules/game_sessions/game.util.js";
 
-const WEEKLY_PREFIX = "clickrush:leaderboard:weekly";
-
 export const rebuildWeeklyLeaderboard = async () => {
     const now = new Date();
 

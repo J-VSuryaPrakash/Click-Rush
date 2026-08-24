@@ -59,7 +59,7 @@ const loginUser = async (data: LoginSchema) => {
 
     const passwordHash = user.passwordHash;
 
-    const isPasswordValid = verifyPassword(password, passwordHash);
+    const isPasswordValid = await verifyPassword(password, passwordHash);
 
     if (!isPasswordValid) {
         throw ApiError.invalidPassword('Password is incorrect');

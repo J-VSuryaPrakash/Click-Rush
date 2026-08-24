@@ -1,4 +1,4 @@
-import { eq, desc, sql } from "drizzle-orm"
+import { eq, desc, sql, and } from "drizzle-orm"
 import { db } from "../../common/db/index.js"
 import { dailyLeaderboards, gameSessions, users, weeklyLeaderboards } from "../../common/db/schema.js"
 import ApiError from "../../common/utils/ApiError.js";
@@ -27,7 +27,7 @@ const gameHistory = async (userId: string) => {
 
     const gameHistory = await db.select()
         .from(gameSessions)
-        .where(eq(gameSessions.userId, userId))
+        .where(and(eq(gameSessions.userId, userId), eq(gameSessions.status, "COMPLETED")))
         .orderBy(desc(gameSessions.endedAt));
 
     const numOfGames = gameHistory.length;
