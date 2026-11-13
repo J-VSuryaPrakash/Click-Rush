@@ -1,3 +1,4 @@
+import Spinner from "@/components/Spinner";
 import { createFileRoute } from '@tanstack/react-router'
 import GamePage from '@/pages/GamePage';
 import { getCurrentUser } from '@/api/auth.api';
@@ -26,8 +27,8 @@ function RouteComponent() {
 
 function PageLoader() {
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-slate-950">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-violet-500" />
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-rush-paper">
+      <Spinner />
     </div>
   );
 }

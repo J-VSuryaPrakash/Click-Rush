@@ -3,16 +3,32 @@ import { throttle } from "@/utils/throttle";
 import { memo } from "react";
 import { useRef } from "react";
 
+// Sends one batch and reports whether it landed and how long the round trip took.
+const sendTimedBatch = (
+    gameId: string,
+    intervals: number[],
+    onResult?: (ok: boolean, ms: number) => void,
+) => {
+    const sentAt = performance.now();
+
+    storeBatchScore(gameId, intervals)
+        .then(() => onResult?.(true, Math.round(performance.now() - sentAt)))
+        .catch(() => onResult?.(false, 0));
+};
+
 interface ArenaProps {
     gameId: string;
     gameStatus: string;
     setLiveScore: React.Dispatch<React.SetStateAction<number>>;
+    // Optional: reports each score sync (ok, round-trip ms). Display only.
+    onBatchResult?: (ok: boolean, ms: number) => void;
 }
 
 function Arena({
     gameId,
     gameStatus,
     setLiveScore,
+    onBatchResult,
 }: ArenaProps) {
 
     const lastClickTime = useRef<number | null>(null);
@@ -25,7 +41,7 @@ function Arena({
 
         if (intervals.length === 0) return;
 
-        storeBatchScore(gameId!, intervals);
+        sendTimedBatch(gameId!, intervals, onBatchResult);
     }, 500);
 
 
@@ -47,53 +63,35 @@ function Arena({
         sendBatchScore();
     };
 
+    const isPlaying = gameStatus === "playing";
+
     return (
-        <div className="h-full w-full">
+        <div
+            onClick={handleClick}
+            className={`group flex h-full min-h-[320px] w-full touch-manipulation select-none items-center justify-center bg-rush-panel ${
+                isPlaying ? "cursor-pointer" : "cursor-not-allowed"
+            }`}
+        >
             <div
-                onClick={handleClick}
-                className={`
-                    flex
-                    h-full
-                    w-full
-                    select-none
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    border-2
-                    border-dashed
-                    bg-slate-900
-                    shadow-2xl
-                    transition-all
-                    ${gameStatus === "playing"
-                        ? `
-                                cursor-pointer
-                                border-violet-500/50
-                                hover:border-violet-400
-                                hover:bg-slate-800
-                              `
-                        : `
-                                cursor-not-allowed
-                                border-slate-700
-                              `
-                    }
-                `}
+                className={`flex size-52 items-center justify-center rounded-full sm:size-60 ${
+                    isPlaying
+                        ? "bg-rush-accent text-rush-accent-ink transition-transform duration-75 ease-out group-hover:bg-rush-accent-hover group-active:scale-[0.96] group-active:bg-rush-accent-press motion-reduce:transition-none motion-reduce:group-active:scale-100"
+                        : "border border-rush-rule text-rush-muted"
+                }`}
             >
-                {gameStatus !== "playing" && (
-                    <div className="text-center">
-                        <p className="text-sm font-semibold text-slate-500">
+                {isPlaying ? (
+                    <span className="text-2xl font-semibold tracking-[-0.02em]">
+                        Click
+                    </span>
+                ) : (
+                    <span className="px-6 text-center">
+                        <span className="block text-base font-medium text-rush-ink">
                             Press Start to play
-                        </p>
-
-                        <p className="mt-1 text-xs text-slate-600">
+                        </span>
+                        <span className="mt-1 block text-sm text-rush-muted">
                             Click as fast as you can
-                        </p>
-                    </div>
-                )}
-
-                {gameStatus === "playing" && (
-                    <p className="select-none text-sm font-semibold tracking-wider text-violet-400/50">
-                        CLICK!
-                    </p>
+                        </span>
+                    </span>
                 )}
             </div>
         </div>

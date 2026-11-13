@@ -1,281 +1,92 @@
 import { Link } from "@tanstack/react-router";
-import { MousePointer2, Trophy, Timer } from "lucide-react";
+import { buttonPrimary, buttonSecondary, container, frameHeader } from "@/lib/ui";
+
+const steps = [
+    { title: "Click the arena", text: "Click as quickly as possible." },
+    { title: "Beat the clock", text: "You have 60 seconds to score." },
+    { title: "Climb the leaderboard", text: "Beat your high score and rank higher." },
+];
 
 function LandingPage() {
     return (
-        <div className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6">
+        <div className="min-h-dvh bg-rush-paper text-rush-ink">
+            <div className={`${container} flex min-h-dvh flex-col justify-center py-6 lg:py-10`}>
 
-            <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-lg flex-col items-center justify-center">
+                <div className="grid grid-cols-1 border border-rush-rule lg:grid-cols-[minmax(0,1fr)_400px]">
 
-                {/* Logo / Brand */}
-                <div className="text-center">
-                    {/* Logo */}
-                    <div className="
-                            mx-auto
-                            mb-2
-                            flex
-                            h-24
-                            w-24
-                            items-center
-                            justify-center
-                            sm:h-36
-                            sm:w-36
-                        ">
+                    {/* Brand + actions */}
+                    <section className="flex flex-col justify-center gap-10 px-6 py-12 sm:px-10 lg:py-20">
                         <img
                             src="https://ik.imagekit.io/uniwebsitecms/clickrush-removebg-preview.png"
                             alt="Click Rush"
-                            className="h-full w-full object-contain"
+                            width={72}
+                            height={72}
+                            className="h-18 w-18 object-contain"
                         />
-                    </div>
-                    {/* Brand */}
-                    <h1 className="
-                        text-5xl
-                        font-black
-                        leading-none
-                        tracking-[-0.04em]
-                        text-white
-                        sm:text-6xl
-                    ">
-                        Click<span className="text-violet-400">Rush</span>
-                    </h1>
 
-                    {/* Accent */}
-                    <div className="
-                        mx-auto
-                        mt-4
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                    ">
-                        <span className="h-1 w-8 rounded-full bg-violet-500" />
-                        <span className="h-1 w-2 rounded-full bg-cyan-400" />
-                        <span className="h-1 w-8 rounded-full bg-violet-500" />
-                    </div>
+                        <div className="min-w-0">
+                            <h1 className="text-5xl font-semibold leading-none tracking-[-0.04em] break-words sm:text-7xl">
+                                Click<span className="text-rush-accent">Rush</span>
+                            </h1>
 
-                    {/* Tagline */}
-                    <p className="
-                        mt-5
-                        text-xs
-                        font-black
-                        tracking-[0.2em]
-                        text-cyan-400
-                        sm:text-sm
-                    ">
-                        TEST YOUR SPEED
-                    </p>
+                            <p className="mt-5 text-xl font-medium text-rush-ink">
+                                Test your speed. Beat your score.
+                            </p>
 
-                    <p className="
-                        mt-1
-                        text-xs
-                        font-semibold
-                        tracking-[0.15em]
-                        text-slate-500
-                        sm:text-sm
-                    ">
-                        BEAT YOUR SCORE
-                    </p>
-
-                </div>
-
-                {/* Description */}
-                <p className="
-                    mt-2
-                    max-w-md
-                    text-center
-                    text-sm
-                    leading-6
-                    text-slate-400
-                    sm:text-base
-                ">
-                    Click as fast as you can in 60 seconds,
-                    chase your high score, and climb the leaderboard.
-                </p>
-
-                {/* Actions */}
-                <div className="
-                    mt-8
-                    flex
-                    w-full
-                    flex-col
-                    gap-3
-                    sm:flex-row
-                ">
-
-                    <Link
-                        to="/login"
-                        className="
-                            flex
-                            h-12
-                            w-full
-                            items-center
-                            justify-center
-                            rounded-xl
-                            bg-violet-600
-                            px-6
-                            text-sm
-                            font-bold
-                            text-white
-                            shadow-lg
-                            shadow-violet-900/30
-                            transition-all
-                            hover:bg-violet-500
-                            hover:shadow-violet-500/20
-                        "
-                    >
-                        Login
-                    </Link>
-
-                    <Link
-                        to="/register"
-                        className="
-                            flex
-                            h-12
-                            w-full
-                            items-center
-                            justify-center
-                            rounded-xl
-                            border
-                            border-slate-700
-                            bg-slate-900
-                            px-6
-                            text-sm
-                            font-bold
-                            text-slate-200
-                            transition-all
-                            hover:border-violet-500/40
-                            hover:bg-slate-800
-                            hover:text-white
-                        "
-                    >
-                        Create Account
-                    </Link>
-
-                </div>
-
-                {/* How to Play */}
-                <div className="
-                    mt-10
-                    w-full
-                    rounded-2xl
-                    border
-                    border-slate-800
-                    bg-slate-900
-                    p-5
-                    shadow-xl
-                    sm:p-6
-                ">
-
-                    <h2 className="
-                        text-center
-                        text-lg
-                        font-black
-                        tracking-tight
-                        text-white
-                    ">
-                        How to Play
-                    </h2>
-
-                    <div className="
-                        mt-5
-                        flex
-                        flex-col
-                        gap-4
-                    ">
-
-                        {/* Step 1 */}
-                        <div className="flex items-center gap-4">
-                            <div className="
-                                flex
-                                h-10
-                                w-10
-                                shrink-0
-                                items-center
-                                justify-center
-                                rounded-xl
-                                bg-violet-500/10
-                                text-violet-400
-                            ">
-                                <MousePointer2 className="h-5 w-5" />
-                            </div>
-
-                            <div>
-                                <h3 className="text-sm font-bold text-white">
-                                    Click the arena
-                                </h3>
-
-                                <p className="mt-0.5 text-xs text-slate-400">
-                                    Click as quickly as possible.
-                                </p>
-                            </div>
+                            <p className="mt-2 max-w-md text-base text-rush-muted">
+                                Click as fast as you can in 60 seconds,
+                                chase your high score, and climb the leaderboard.
+                            </p>
                         </div>
 
-                        {/* Step 2 */}
-                        <div className="flex items-center gap-4">
-                            <div className="
-                                flex
-                                h-10
-                                w-10
-                                shrink-0
-                                items-center
-                                justify-center
-                                rounded-xl
-                                bg-cyan-500/10
-                                text-cyan-400
-                            ">
-                                <Timer className="h-5 w-5" />
-                            </div>
+                        {/* Actions */}
+                        <div className="flex flex-col gap-3 sm:flex-row">
+                            <Link to="/login" className={`${buttonPrimary} w-full sm:w-44`}>
+                                Login
+                            </Link>
 
-                            <div>
-                                <h3 className="text-sm font-bold text-white">
-                                    Beat the clock
-                                </h3>
+                            <Link to="/register" className={`${buttonSecondary} w-full sm:w-44`}>
+                                Create Account
+                            </Link>
+                        </div>
+                    </section>
 
-                                <p className="mt-0.5 text-xs text-slate-400">
-                                    You have 60 seconds to score.
-                                </p>
-                            </div>
+                    {/* How to Play */}
+                    <aside className="flex flex-col border-t border-rush-rule lg:border-l lg:border-t-0">
+                        <div className={frameHeader}>
+                            <h2 className="text-base font-semibold tracking-[-0.01em]">
+                                How to Play
+                            </h2>
                         </div>
 
-                        {/* Step 3 */}
-                        <div className="flex items-center gap-4">
-                            <div className="
-                                flex
-                                h-10
-                                w-10
-                                shrink-0
-                                items-center
-                                justify-center
-                                rounded-xl
-                                bg-amber-400/10
-                                text-amber-400
-                            ">
-                                <Trophy className="h-5 w-5" />
-                            </div>
+                        <ol className="flex-1">
+                            {steps.map((step, i) => (
+                                <li
+                                    key={step.title}
+                                    className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-rush-rule px-5 py-5"
+                                >
+                                    <span className="text-sm font-semibold tabular-nums text-rush-accent">
+                                        {String(i + 1).padStart(2, "0")}
+                                    </span>
+                                    <div>
+                                        <h3 className="text-base font-semibold text-rush-ink">
+                                            {step.title}
+                                        </h3>
+                                        <p className="mt-1 text-sm text-rush-muted">
+                                            {step.text}
+                                        </p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
 
-                            <div>
-                                <h3 className="text-sm font-bold text-white">
-                                    Climb the leaderboard
-                                </h3>
+                        {/* Footer */}
+                        <p className="px-5 py-4 text-sm text-rush-muted">
+                            Ready to see how fast you can click?
+                        </p>
+                    </aside>
 
-                                <p className="mt-0.5 text-xs text-slate-400">
-                                    Beat your high score and rank higher.
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
-
-                {/* Footer */}
-                <p className="
-                    mt-6
-                    text-center
-                    text-xs
-                    text-slate-600
-                ">
-                    Ready to see how fast you can click?
-                </p>
 
             </div>
         </div>

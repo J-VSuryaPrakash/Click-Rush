@@ -1,9 +1,10 @@
 import { useState } from "react";
 import TableRow from "./TableRow";
-import { Button } from "@/components/ui/button";
 import { useLeaderBoard } from "@/hooks/useLeaderBoard";
 import type { Leader } from "@/api/leaderboard.api";
 import EmptyState from "@/components/EmptyState";
+import Spinner from "@/components/Spinner";
+import { container, focusRing, ledgerGrid } from "@/lib/ui";
 
 function Board() {
 
@@ -27,78 +28,70 @@ function Board() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 px-4 py-6 sm:px-6">
+        <div className="min-h-[calc(100dvh-4rem)] bg-rush-paper text-rush-ink">
+            <div className={`${container} py-5 lg:py-8`}>
 
-            {/* Main Container */}
-            <div className="mx-auto w-full max-w-3xl">
+                <div className="mx-auto w-full max-w-3xl border border-rush-rule">
 
-                {/* Header */}
-                <div className="mb-6 text-center">
-                    <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
-                        Leaderboard
-                    </h1>
+                    {/* Header */}
+                    <div className="flex flex-col gap-3 border-b border-rush-rule px-5 pt-4 sm:flex-row sm:items-stretch sm:justify-between sm:pt-0">
+                        <div className="sm:py-4">
+                            <h1 className="text-xl font-semibold tracking-[-0.02em]">
+                                Leaderboard
+                            </h1>
 
-                    <p className="mt-1 text-xs text-slate-400 sm:text-sm">
-                        See who's leading the rush.
-                    </p>
-                </div>
+                            <p className="mt-1 text-sm text-rush-muted">
+                                See who&rsquo;s leading the rush.
+                            </p>
+                        </div>
 
-                {/* Category Selector */}
-                <div className="mb-6 grid grid-cols-3 gap-2 rounded-xl border border-slate-800 bg-slate-900 p-1.5 sm:gap-3">
-
-                    {categories.map((val) => (
-                        <Button
-                            key={val}
-                            variant="ghost"
-                            onClick={() => setCategory(val)}
-                            className={`
-                                h-9 rounded-lg
-                                text-xs font-bold capitalize
-                                transition-all
-                                sm:h-10 sm:text-sm
-                                ${category === val
-                                    ? "bg-violet-600 text-white hover:bg-violet-500 hover:text-white"
-                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                                }
-                            `}
-                        >
-                            {val}
-                        </Button>
-                    ))}
-
-                </div>
-
-                {/* Leaderboard */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-2 sm:p-4">
+                        {/* Category Selector */}
+                        <div role="group" aria-label="Leaderboard period" className="flex items-stretch gap-5">
+                            {categories.map((val) => {
+                                const active = category === val;
+                                return (
+                                    <button
+                                        key={val}
+                                        type="button"
+                                        aria-pressed={active}
+                                        onClick={() => setCategory(val)}
+                                        className={`-mb-px h-11 cursor-pointer border-b-2 text-sm capitalize sm:h-auto ${focusRing} ${
+                                            active
+                                                ? "border-rush-accent text-rush-ink"
+                                                : "border-transparent text-rush-muted hover:text-rush-ink"
+                                        }`}
+                                    >
+                                        {val}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
 
                     {/* Column Header */}
-                    <div className="mb-2 flex items-center px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500 sm:px-4 sm:text-xs">
-
-                        <div className="w-12 sm:w-14">
-                            Rank
-                        </div>
-
-                        <div className="flex-1">
-                            Player
-                        </div>
-
-                        <div>
-                            Score
-                        </div>
-
+                    <div className={`${ledgerGrid} h-10 border-b border-rush-rule text-[13px] text-rush-muted`}>
+                        <span>Rank</span>
+                        <span>Player</span>
+                        <span className="text-right">Score</span>
                     </div>
 
                     {/* Rows */}
-                    <div className="flex flex-col gap-2">
-                        {leaders.map((leader: Leader) => (
-                            <TableRow
-                                key={leader.id}
-                                rank={Number(leader.rank)}
-                                username={leader.username}
-                                score={leader.score}
-                            />
-                        ))}
-                    </div>
+                    {isLoading ? (
+                        <div className="flex h-48 items-center justify-center">
+                            <Spinner />
+                        </div>
+                    ) : (
+                        <ol>
+                            {leaders.map((leader: Leader) => (
+                                <TableRow
+                                    key={leader.id}
+                                    rank={Number(leader.rank)}
+                                    username={leader.username}
+                                    score={leader.score}
+                                />
+                            ))}
+                        </ol>
+                    )}
 
                 </div>
 

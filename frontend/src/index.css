@@ -1,3 +1,11 @@
+/* Hallmark · shape: app screen (/game) · genre: modern-minimal (ledger tone, by request) · theme: custom (by request) · redesign: full
+ * paper: #141414 · accent: #cf7044 terracotta · display: Inter Variable · body: Inter Variable
+ * nav: project Navbar, restyled onto the same system (all routes share it; shared classes in src/lib/ui.ts) · signature: the terracotta click target under a live telemetry ledger · states: idle, starting, playing, finished, completing, error, offline, loading, empty
+ * axes: dark/grotesk-sans/chromatic-terracotta · posture: quiet · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: V, a flat dark board can read empty; the target's solid accent disc and big tabular figures carry it */
+/* Hallmark · answered: rush-* tokens live in @theme so Tailwind utilities read them; other routes keep their slate classes untouched */
+/* Hallmark · open: 26a on the click target, kept a pointer-only div as before (no keyboard path existed); 48 on shadcn's pre-existing .dark block */
+/* Hallmark · moved onClick navigate("/leaderboard") into openLeaderboard (useCallback) · same behaviour, keeps the memoised sidebar from re-rendering per click */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -46,6 +54,20 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ClickRush game screen tokens: one neutral, one structural contrast, one accent */
+@theme {
+    --color-rush-paper: #141414;
+    --color-rush-panel: #1b1b1a;
+    --color-rush-rule: #323230;
+    --color-rush-field: #6a6964;
+    --color-rush-ink: #f1efe9;
+    --color-rush-muted: #9b9a94;
+    --color-rush-accent: #cf7044;
+    --color-rush-accent-hover: #d9825a;
+    --color-rush-accent-press: #b9603a;
+    --color-rush-accent-ink: #141414;
 }
 
 :root {
@@ -122,9 +144,17 @@
     @apply border-border outline-ring/50;
     }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-rush-paper text-rush-ink antialiased;
     }
   html {
     @apply font-sans;
+    color-scheme: dark;
+    }
+  ::selection {
+    @apply bg-rush-accent text-rush-accent-ink;
+    }
+  html,
+  body {
+    overflow-x: clip;
     }
 }

@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "@tanstack/react-router";
 import { LogOut, User } from "lucide-react";
 import { memo } from "react";
+import { container, iconButton, focusRing } from "@/lib/ui";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -13,97 +13,42 @@ function Navbar() {
     };
 
     return (
-        <nav className="
-            w-full
-            shrink-0
-            border-b border-slate-800
-            bg-slate-950
-        ">
-            <div className="
-                relative
-                mx-auto
-                flex
-                h-16
-                w-full
-                items-center
-                justify-center
-                px-4
-                lg:w-[70%]
-            ">
+        <nav className="w-full shrink-0 border-b border-rush-rule bg-rush-paper">
+            <div className={`${container} flex h-16 items-center justify-between gap-4`}>
 
                 {/* Logo */}
-                <div className="flex items-center justify-center gap-2">
-                    <span className="
-                        text-2xl
-                        font-black
-                        tracking-tight
-                        text-white
-                    ">
-                        Click
-                    </span>
-
-                    <span className="
-                        text-2xl
-                        font-black
-                        tracking-tight
-                        text-violet-400
-                    ">
-                        Rush
-                    </span>
-                </div>
+                <p className="text-xl font-semibold tracking-[-0.03em] text-rush-ink">
+                    Click<span className="text-rush-accent">Rush</span>
+                </p>
 
                 {/* Actions */}
-                <div className="
-                    absolute
-                    right-4
-                    flex
-                    items-center
-                    gap-2
-                ">
+                <div className="flex items-center gap-2">
 
                     {/* Profile */}
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        className="
-                            rounded-full
-                            border-slate-700
-                            bg-slate-900
-                            text-slate-300
-                            transition-all
-                            hover:border-violet-500/50
-                            hover:bg-violet-500/10
-                            hover:text-violet-300
-                            hover:cursor-pointer
-                        "
+                    <button
+                        type="button"
+                        aria-label="Profile"
+                        className={iconButton}
                         onClick={() => navigate({ to: "/profile" })}
                     >
-                        <User className="h-5 w-5" />
-                    </Button>
+                        <User aria-hidden="true" className="h-4 w-4" />
+                    </button>
 
                     {/* Logout */}
-                    <Button
-                        variant="outline"
-                        className="
-                            h-9
-                            rounded-lg
-                            border-slate-700
-                            bg-slate-900
-                            px-3
-                            text-slate-400
-                            transition-all
-                            hover:border-rose-500/40
-                            hover:bg-rose-500/10
-                            hover:text-rose-400
-                        "
+                    <button
+                        type="button"
+                        className={`inline-flex h-9 cursor-pointer items-center gap-2 rounded-[4px] border border-rush-rule px-3 text-sm font-medium text-rush-ink transition-transform duration-75 ease-out hover:border-rush-muted active:scale-[0.97] motion-reduce:transition-none ${focusRing}`}
                         onClick={handleLogout}
                     >
-                        <LogOut className="h-4 w-4 sm:mr-2" />
+                        <LogOut aria-hidden="true" className="h-4 w-4" />
 
-                        <span className="hidden sm:inline hover:cursor-pointer">
+                        <span className="hidden sm:inline">
                             Logout
                         </span>
-                    </Button>
+                        <span className="sr-only sm:hidden">
+                            Logout
+                        </span>
+                    </button>
 
                 </div>
 

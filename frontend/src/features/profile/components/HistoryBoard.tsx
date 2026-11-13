@@ -3,12 +3,17 @@ import { useProfile, useRanks } from "@/hooks/useProfile.ts";
 import EmptyState from "@/components/EmptyState.tsx";
 import { useCurrentUser } from "@/hooks/useCurrentUser.ts";
 import Loading from "@/components/Loading.tsx";
+import StatCell from "@/features/game/components/StatCell.tsx";
+import { container, frameHeader, ledgerGrid } from "@/lib/ui";
 
 interface HistoryData {
     id: number;
     score: number;
     endedAt: string;
 }
+
+const rankValue = (rank?: number) => (rank !== undefined ? `#${rank}` : "—");
+const rankNote = (score?: number) => (score !== undefined ? `Score: ${score}` : undefined);
 
 function HistoryBoard() {
 
@@ -41,219 +46,57 @@ function HistoryBoard() {
         )
     }
 
+    const global = ranks?.globalRank?.at(0);
+    const daily = ranks?.dailyRank?.at(0);
+    const weekly = ranks?.weeklyRank?.at(0);
+
     return (
-        <div className="min-h-screen bg-slate-950 px-4 py-6 sm:px-6">
+        <div className="min-h-[calc(100dvh-4rem)] bg-rush-paper text-rush-ink">
+            <div className={`${container} py-5 lg:py-8`}>
 
-            <div className="mx-auto w-full max-w-4xl">
+                <div className="mx-auto w-full max-w-4xl border border-rush-rule">
 
-                {/* Stats */}
-                <div className="
-                    grid
-                    grid-cols-1
-                    gap-3
-                    sm:grid-cols-3
-                    sm:gap-4
-                ">
-
-                    {/* High Score */}
-                    <div className="
-                        rounded-xl
-                        border border-violet-500/20
-                        bg-slate-900
-                        p-4
-                        text-center
-                        shadow-lg
-                    ">
-                        <p className="
-                            text-xs
-                            font-bold
-                            uppercase
-                            tracking-wider
-                            text-violet-400
-                        ">
-                            High Score
-                        </p>
-
-                        <p className="
-                            mt-2
-                            text-3xl
-                            font-black
-                            text-violet-400
-                        ">
-                            {user?.data.bestScore}
-                        </p>
+                    {/* Header */}
+                    <div className={frameHeader}>
+                        <h1 className="text-base font-semibold tracking-[-0.01em]">
+                            Profile
+                        </h1>
+                        {user?.data.name && (
+                            <p className="truncate text-sm text-rush-muted">
+                                {user.data.name}
+                            </p>
+                        )}
                     </div>
 
-                    {/* Average Clicks */}
-                    <div className="
-                        rounded-xl
-                        border border-cyan-500/20
-                        bg-slate-900
-                        p-4
-                        text-center
-                        shadow-lg
-                    ">
-                        <p className="
-                            text-xs
-                            font-bold
-                            uppercase
-                            tracking-wider
-                            text-cyan-400
-                        ">
-                            Avg Clicks
-                        </p>
-
-                        <p className="
-                            mt-2
-                            text-3xl
-                            font-black
-                            text-cyan-400
-                        ">
-                            {profile?.avgClick}
-                        </p>
+                    {/* Stats */}
+                    <div className="grid grid-cols-1 gap-px border-b border-rush-rule bg-rush-rule sm:grid-cols-3">
+                        <StatCell label="High Score" value={user?.data.bestScore ?? "—"} />
+                        <StatCell label="Avg Clicks" value={profile?.avgClick ?? "—"} />
+                        <StatCell label="Games Played" value={profile?.numOfGames ?? "—"} />
                     </div>
 
-                    {/* Games Played */}
-                    <div className="
-                        rounded-xl
-                        border border-amber-500/20
-                        bg-slate-900
-                        p-4
-                        text-center
-                        shadow-lg
-                    ">
-                        <p className="
-                            text-xs
-                            font-bold
-                            uppercase
-                            tracking-wider
-                            text-amber-400
-                        ">
-                            Games Played
-                        </p>
-
-                        <p className="
-                            mt-2
-                            text-3xl
-                            font-black
-                            text-amber-400
-                        ">
-                            {profile?.numOfGames}
-                        </p>
+                    {/* Ranks */}
+                    <div className="grid grid-cols-1 gap-px border-b border-rush-rule bg-rush-rule sm:grid-cols-3">
+                        <StatCell label="Global Rank" value={rankValue(global?.rank)} note={rankNote(global?.score)} />
+                        <StatCell label="Daily Rank" value={rankValue(daily?.rank)} note={rankNote(daily?.score)} />
+                        <StatCell label="Weekly Rank" value={rankValue(weekly?.rank)} note={rankNote(weekly?.score)} />
                     </div>
-
-                </div>
-
-                {/* Ranks */}
-                <div className="
-                    mt-4
-                    grid
-                    grid-cols-1
-                    gap-3
-                    sm:grid-cols-3
-                    sm:gap-4
-                ">
-
-                    {/* Global */}
-                    <div className="
-                        rounded-xl
-                        border border-slate-800
-                        bg-slate-900
-                        p-4
-                        text-center
-                    ">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                            Global Rank
-                        </p>
-
-                        <p className="mt-2 text-2xl font-black text-white">
-                            #{ranks?.globalRank?.at(0)?.rank}
-                        </p>
-                        <p className="text-xs font-normal text-slate-400">
-                            Score: {ranks?.globalRank?.at(0)?.score}
-                        </p>
-                    </div>
-
-                    {/* Daily */}
-                    <div className="
-                        rounded-xl
-                        border border-slate-800
-                        bg-slate-900
-                        p-4
-                        text-center
-                    ">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                            Daily Rank
-                        </p>
-
-                        <p className="mt-2 text-2xl font-black text-white">
-                            #{ranks?.dailyRank?.at(0)?.rank}
-                        </p>
-                        <p className="text-xs font-normal text-slate-400">
-                            Score: {ranks?.dailyRank?.at(0)?.score}
-                        </p>
-                    </div>
-
-                    {/* Weekly */}
-                    <div className="
-                        rounded-xl
-                        border border-slate-800
-                        bg-slate-900
-                        p-4
-                        text-center
-                    ">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                            Weekly Rank
-                        </p>
-
-                        <p className="mt-2 text-2xl font-black text-white">
-                            #{ranks?.weeklyRank?.at(0)?.rank}
-
-                        </p>
-                        <p className="text-xs font-normal text-slate-400">
-                            Score: {ranks?.weeklyRank?.at(0)?.score}
-                        </p>
-                    </div>
-
-                </div>
-
-                {/* History */}
-                <div className="
-                    mt-6
-                    overflow-hidden
-                    rounded-2xl
-                    border border-slate-800
-                    bg-slate-900
-                    shadow-xl
-                ">
 
                     {/* History Header */}
-                    <div className="
-                        grid
-                        grid-cols-[60px_1fr_120px]
-                        items-center
-                        bg-slate-950
-                        px-3
-                        py-3
-                        text-[10px]
-                        font-bold
-                        uppercase
-                        tracking-wider
-                        text-slate-500
-                        sm:grid-cols-[80px_1fr_160px]
-                        sm:px-4
-                    ">
-                        <p>S.No</p>
+                    <div className={frameHeader}>
+                        <h2 className="text-base font-semibold tracking-[-0.01em]">
+                            Game history
+                        </h2>
+                    </div>
 
-                        <p>Score</p>
-
-                        <p className="text-right">
-                            Date
-                        </p>
+                    <div className={`${ledgerGrid} h-10 border-b border-rush-rule text-[13px] text-rush-muted`}>
+                        <span>S.No</span>
+                        <span>Score</span>
+                        <span className="text-right">Date</span>
                     </div>
 
                     {/* History Rows */}
-                    <div>
+                    <ol>
                         {history.map((game, index) => (
                             <History
                                 key={game.id}
@@ -262,7 +105,7 @@ function HistoryBoard() {
                                 date={game.endedAt.split('T')[0]}
                             />
                         ))}
-                    </div>
+                    </ol>
 
                 </div>
 

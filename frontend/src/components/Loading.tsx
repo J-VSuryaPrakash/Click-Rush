@@ -1,14 +1,16 @@
+import Spinner from "./Spinner";
+
 function Loading() {
     return (
-        <div className="flex min-h-screen w-full items-center justify-center bg-slate-950">
-            <div className="flex flex-col items-center">
-                <h1 className="text-2xl font-black tracking-tight text-white">
-                    Click<span className="text-violet-400">Rush</span>
-                </h1>
+        <div className="flex min-h-[calc(100dvh-4rem)] w-full items-center justify-center bg-rush-paper">
+            <div className="flex flex-col items-center gap-4">
+                <p className="text-lg font-semibold tracking-[-0.03em] text-rush-ink">
+                    Click<span className="text-rush-accent">Rush</span>
+                </p>
 
-                <div className="mt-5 h-8 w-8 animate-spin rounded-full border-2 border-slate-700 border-t-violet-500" />
+                <Spinner />
 
-                <p className="mt-3 text-xs text-slate-500">
+                <p className="text-sm text-rush-muted">
                     Loading...
                 </p>
             </div>

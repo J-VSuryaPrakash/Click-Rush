@@ -1,76 +1,33 @@
 function ClickRush() {
     return (
-        <div className="
-            relative
-            flex
-            h-full
-            min-h-125
-            flex-col
-            items-center
-            justify-center
-            overflow-hidden
-            bg-slate-950
-            px-6
-            text-center
-        ">
+        <div className="flex h-full min-h-[560px] flex-col justify-center gap-10 bg-rush-panel px-10 py-16">
 
             {/* Image */}
-            <div className="mb-7 flex h-48 w-48 items-center justify-center">
-                <img
-                    src="https://ik.imagekit.io/uniwebsitecms/clickrush-removebg-preview.png"
-                    alt="Click Rush"
-                    className="h-full w-full object-contain"
-                />
-            </div>
+            <img
+                src="https://ik.imagekit.io/uniwebsitecms/clickrush-removebg-preview.png"
+                alt="Click Rush"
+                width={96}
+                height={96}
+                className="h-24 w-24 object-contain"
+            />
 
-            {/* Brand */}
             <div>
-                <h1 className="
-                    text-4xl
-                    font-black
-                    tracking-tight
-                    text-white
-                    sm:text-5xl
-                ">
-                    Click
-                    <span className="text-violet-400">
-                        Rush
-                    </span>
-                </h1>
+                {/* Brand */}
+                <p className="text-5xl font-semibold leading-none tracking-[-0.04em] text-rush-ink lg:text-6xl">
+                    Click<span className="text-rush-accent">Rush</span>
+                </p>
 
-                <div className="
-                    mx-auto
-                    mt-3
-                    h-1
-                    w-12
-                    rounded-full
-                    bg-violet-500
-                " />
+                {/* Tagline */}
+                <p className="mt-5 text-xl font-medium text-rush-ink">
+                    Test your speed. Beat your score.
+                </p>
+
+                <p className="mt-2 max-w-sm text-base text-rush-muted">
+                    Click faster. Push your limits.
+                    <br />
+                    Become the fastest player.
+                </p>
             </div>
-
-            {/* Tagline */}
-            <p className="
-                mt-5
-                text-sm
-                font-semibold
-                tracking-wide
-                text-cyan-400
-                sm:text-base
-            ">
-                TEST YOUR SPEED. BEAT YOUR SCORE.
-            </p>
-
-            <p className="
-                mt-2
-                max-w-sm
-                text-sm
-                leading-6
-                text-slate-400
-            ">
-                Click faster. Push your limits.
-                <br />
-                Become the fastest player.
-            </p>
 
         </div>
     );

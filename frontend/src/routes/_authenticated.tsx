@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
     return (
-        <div className="min-h-screen bg-slate-950">
+        <div className="min-h-screen bg-rush-paper text-rush-ink">
             <Navbar />
 
             <main>

@@ -9,7 +9,7 @@ export const Route = createRootRouteWithContext<{
 
 function RootLayout() {
     return (
-        <div className="min-h-screen bg-slate-950">
+        <div className="min-h-screen bg-rush-paper text-rush-ink">
             <Outlet />
         </div>
     );
